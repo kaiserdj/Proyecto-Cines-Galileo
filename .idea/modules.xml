@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Cine Rio Shopping/Cine Rio Shopping.iml" filepath="$PROJECT_DIR$/Cine Rio Shopping/Cine Rio Shopping.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Cines Galileo/Cines Galileo.iml" filepath="$PROJECT_DIR$/Cines Galileo/Cines Galileo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Proyecto-Cines-Galileo.iml" filepath="$PROJECT_DIR$/.idea/Proyecto-Cines-Galileo.iml" />
+    </modules>
+  </component>
+</project>
