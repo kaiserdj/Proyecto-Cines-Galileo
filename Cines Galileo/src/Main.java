@@ -20,12 +20,24 @@ public class Main {
                             System.out.println("Porfavor introducta un numero entre 1 y 12");
                         }
                     } while (fila < 1 || fila > 12);
+                    fila--;
+                    if(sala.getAsientosLibresFila(fila)>tickets){
+                        int Tickets[] = sala.setAsientos(fila, tickets);
+                        System.out.println("Sus entradas son:");
+                        for(int i=0;i<Tickets.length;i++){
+                            System.out.println("Fila: " + (fila+1) + " Asiento: " + (Tickets[i]+1));
+                        }
+                        System.out.println("Importe de la entradas = ");
+                        System.out.println();
+                    }else{
 
+                    }
                 }
             }else {
-                System.out.println("ESNTRADAS AGOTADAS");
+                System.out.println("ENTRADAS AGOTADAS");
                 System.exit(0);
             }
         }while(tickets!=0);
+        System.out.println();
     }
 }
