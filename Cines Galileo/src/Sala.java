@@ -43,6 +43,22 @@ public class Sala {
         return cont;
     }
 
+    public int[] getFilasAsientetosLibres(int Asientos){
+        int a[] = new int[12];
+        int cont = 0;
+        for(int i=0;i<asientos.length;i++){
+            if(getAsientosLibresFila(i)>=Asientos){
+                a[cont]=i;
+                cont++;
+            }
+        }
+        int filas[] = new int[cont];
+        for(int i=0;i<cont;i++){
+            filas[i]=a[i];
+        }
+        return filas;
+    }
+
     public void imprimirSala(){
         System.out.println("    1  2  3  4  5  6  7  8  9  10");
         for(int i=0;i<12;i++){
