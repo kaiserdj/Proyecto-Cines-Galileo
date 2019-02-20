@@ -22,16 +22,16 @@ public class Sala {
     public int[] setAsientos(int fila, int num){
         int cont=0;
         int butacas[] = new int[num];
-            for(int i=0;i<asientos[fila].length;i++){
-                if(cont<num) {
-                    if (asientos[fila][i].getComprado() == false) {
-                        asientos[fila][i].setComprado(true);
-                        butacas[cont] = i;
-                        cont++;
-                        total--;
-                    }
+        for(int i=0;i<asientos[fila].length;i++){
+            if(cont<num) {
+                if (asientos[fila][i].getComprado() == false) {
+                    asientos[fila][i].setComprado(true);
+                    butacas[cont] = i;
+                    cont++;
+                    total--;
                 }
             }
+        }
         return butacas;
     }
 
