@@ -1,21 +1,26 @@
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public class Sala {
     //atributos
     private int sala;
     private String pelicula;
-    private int venta;
     private Butaca[][] butacas;
 
     //constructor
-    public Sala(int sala,String pelicula, int filas, int butacas){
+    public Sala(int sala,String pelicula, int filas, int butacas, int filaVip){
         this.sala=sala;
         this.pelicula = pelicula;
-        this.venta = 0;
         this.butacas = new Butaca[filas][butacas];
         for(int i=0;i<this.butacas.length;i++){
             for(int x=0;x<this.butacas[i].length;x++){
-                this.butacas[i][x]=new Butaca();
+                if(i==filaVip) {
+                    this.butacas[i][x] = new Butaca(1);
+                }else if(i==0&&(x==0||x==1)){
+                    this.butacas[i][x] = new Butaca(2);
+                }else{
+                    this.butacas[i][x] = new Butaca(0);
+                }
             }
         }
     }
@@ -57,15 +62,20 @@ public class Sala {
                 System.out.println();
                 switch (opcion) {
                     case 1:
-                        System.out.print("Cuantas butacas desea: ");
-                        opcion = teclado.nextInt();
+
+                        do {
+                            System.out.print("Cuantas butacas desea: ");
+                            opcion = teclado.nextInt();
+                            if (opcion>getNumButacasLibre()) {
+                                System.out.println("Error: No quedan tantas butacas libres, solo quedan(0 si no quiere ninguna): " + getNumButacasLibre());
+                            }
+                        } while (opcion>getNumButacasLibre());
                         limpiar();
                         BUTACAS = setButacasAleatorios(opcion);
                         for(int i=0;i<BUTACAS.length;i++){
-                            ticket(sala,BUTACAS[i][0]+1,BUTACAS[i][1]+1,getPelicula(),"22:00", "09/03/2019", "MINUSV", 5.5f,getNumVentaButaca(BUTACAS[i][0],BUTACAS[i][1]),"21/02/2019 19:18");
+                            ticket(sala,BUTACAS[i][0]+1,BUTACAS[i][1]+1,getPelicula(),"22:00", "09/03/2019", getTipoButaca(BUTACAS[i][0],BUTACAS[i][1]),getNumVentaButaca(BUTACAS[i][0],BUTACAS[i][1]),getFechaVenta(BUTACAS[i][0],BUTACAS[i][1]));
                             System.out.println();
                         }
-                        imprimirSala();
                         System.out.println("Pulse cualquier telca para continuar");
                         teclado.nextLine();
                         teclado.nextLine();
@@ -97,8 +107,14 @@ public class Sala {
             System.out.print(" ");
             for(int x=0;x<butacas[i].length;x++){
                 if(butacas[i][x].getEstado()==false){
-                    System.out.print("0  ");
-                }else{
+                        if(butacas[i][x].getTipo()==0) {
+                            System.out.print("0  ");
+                        }else if(butacas[i][x].getTipo()==1) {
+                            System.out.print("V  ");
+                        }else{
+                            System.out.print("M  ");
+                        }
+                    }else{
                     System.out.print("1  ");
                 }
                 if(x>8){
@@ -112,14 +128,41 @@ public class Sala {
             }
             System.out.println();
         }
+        System.out.println("\n 0=Butaca normal   1=Butaca comprada   V=Butaca VIP   M=Butaca para minusvadilos");
     }
 
     public String getPelicula() {
         return pelicula;
     }
 
+    public String getTipoButaca(int fila, int butaca){
+        if(butacas[fila][butaca].getTipo()==0){
+            return "NORMAL";
+        }else if(butacas[fila][butaca].getTipo()==1){
+            return "VIP";
+        }else{
+            return "MINUSV";
+        }
+    }
+
     public int getNumVentaButaca(int fila, int butaca){
         return butacas[fila][butaca].getNumVenta();
+    }
+
+    public GregorianCalendar getFechaVenta(int fila, int butaca){
+        return butacas[fila][butaca].getFechaVenta();
+    }
+
+    public int getNumButacasLibre(){
+        int libres=0;
+        for(int i=0;i<butacas.length;i++){
+            for(int x=0;x<butacas[i].length;x++){
+                if(butacas[i][x].getEstado()==false){
+                    libres++;
+                }
+            }
+        }
+        return libres;
     }
 
     public int[][] setButacasAleatorios(int numButacas) {
@@ -134,9 +177,7 @@ public class Sala {
                     a=2;
                 }
             }
-            butacas[numAltFila][numAltButaca].setEstado(true);
-            venta++;
-            butacas[numAltFila][numAltButaca].setNumVenta(venta);
+            butacas[numAltFila][numAltButaca].setComprado();
             BUTACAS[i][0] = numAltFila;
             BUTACAS[i][1] = numAltButaca;
         }
@@ -145,8 +186,8 @@ public class Sala {
     }
 
     //Otros
-    private static void ticket(int sala, int fila, int but, String name, String sesion, String fecha, String tipo, float precio, int no, String venta){
-        String Sala ="",Fila="",But="",Name="",Tipo="",Precio="",No="";
+    private static void ticket(int sala, int fila, int but, String name, String sesion, String fecha, String tipo, int no, GregorianCalendar venta){
+        String Sala ="",Fila="",But="",Name="",Tipo="",Precio="",No="",Venta="";
         if(sala<10){
             Sala = "0"+sala;
         }else {
@@ -181,6 +222,14 @@ public class Sala {
         }else{
             Tipo=tipo;
         }
+        float precio = 0;
+        if(tipo=="NORMAL"){
+            precio = 6.00f;
+        }else if(tipo=="VIP"){
+            precio = 7.50f;
+        }else {
+            precio = 6.25f;
+        }
         Precio = String.format("%.2f", precio) + "€";
         No=Integer.toString(no);
         if(No.length()<6){
@@ -191,7 +240,35 @@ public class Sala {
             }
             No=No+no;
         }
+        int ventadia=venta.get(venta.DAY_OF_MONTH),ventaMes=venta.get(venta.MONTH),ventaAño=venta.get(venta.YEAR),ventaHora=venta.get(venta.HOUR_OF_DAY),ventaMin=venta.get(venta.MINUTE);
+        String Ventadia="",VentaMes="",VentaAño="",VentaHora="",VentaMin="";
+        if(ventadia<10){
+            Ventadia="0"+ventadia;
+        }else{
+            Ventadia=""+ventadia;
+        }
+        if(ventaMes<10){
+            VentaMes="0"+ventaMes;
+        }else{
+            VentaMes=""+ventaMes;
+        }
+        if(ventaAño<10){
+            VentaAño="0"+ventaAño;
+        }else{
+            VentaAño=""+ventaAño;
+        }
+        if(ventaHora<10){
+            VentaHora="0"+ventaHora;
+        }else{
+            VentaHora=""+ventaHora;
+        }
+        if(ventaMin<10){
+            VentaMin="0"+ventaMin;
+        }else{
+            VentaMin=""+ventaMin;
+        }
 
+        Venta=""+Ventadia+"/"+VentaMes+"/"+VentaAño+" "+VentaHora+":"+VentaMin;
 
         System.out.println("--------------------------------------------------------"                        +"     --------------------------------------------------------");
         System.out.println("|                |    Pelicula: " + Name + " |"                                  +"     |      Ocine Río Shopping         CIF: B55118053       |");
@@ -199,7 +276,7 @@ public class Sala {
         System.out.println("|      OCINE     |     Sala     Sesison     Fecha      |"                        +"     |      Rio Shopping, Calle Me Falta un Tornillo, 3     |");
         System.out.println("|       RIO      |      " + Sala + "       " + sesion + "    " + fecha + "   |"  +"     |       47195 Arroyo de la Encomienda, Valladolid      |");
         System.out.println("|    SHOPPING    |                                     |"                        +"     |                                                      |");
-        System.out.println("|                |       Fila: " + Fila + "      Butaca: " + But + "      |"     +"     |    N/O: " + No + "        Hora venta: " + venta + "   |");
+        System.out.println("|                |       Fila: " + Fila + "      Butaca: " + But + "      |"     +"     |    N/O: " + No + "        Hora venta: " + Venta + "   |");
         System.out.println("|                |    Tipo: " + Tipo + "    Precio: " + Precio + "    |"         +"     |                                                      |");
         System.out.println("--------------------------------------------------------"                        +"     --------------------------------------------------------");
     }

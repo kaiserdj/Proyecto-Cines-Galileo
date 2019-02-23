@@ -2,13 +2,14 @@ import java.util.Scanner;
 
 public class Main {
     public static int pSalas=0;
+    public static int ventas=0;
+
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        int SelSala=0, opcion=0;
-        int[][] BUTACAS=null;
-        Sala sala1 = new Sala(1, "Fast and Furius", 10, 10);
-        Sala sala2 = new Sala(2, "Star Wars", 5, 5);
-        Sala sala3 = new Sala(3, "Los Increibles", 7, 5);
+        int SelSala=0;
+        Sala sala1 = new Sala(1, "Fast and Furius", 10, 10, 5);
+        Sala sala2 = new Sala(2, "Star Wars", 5, 5, 3);
+        Sala sala3 = new Sala(3, "Los Increibles", 7, 5, 3);
         
 
         for(;pSalas<1;) {
@@ -39,8 +40,6 @@ public class Main {
                     sala3.SelSala();
                     break;
             }
-
-
         }
     }
 
