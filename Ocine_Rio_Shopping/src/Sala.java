@@ -5,21 +5,25 @@ public class Sala {
     //atributos
     private int sala;
     private String pelicula;
-    private Butaca[][] butacas;
+    private Butaca[][][][] butacas;
 
     //constructor
     public Sala(int sala,String pelicula, int filas, int butacas, int filaVip){
         this.sala=sala;
         this.pelicula = pelicula;
-        this.butacas = new Butaca[filas][butacas];
-        for(int i=0;i<this.butacas.length;i++){
-            for(int x=0;x<this.butacas[i].length;x++){
-                if(i==filaVip) {
-                    this.butacas[i][x] = new Butaca(1);
-                }else if(i==0&&(x==0||x==1)){
-                    this.butacas[i][x] = new Butaca(2);
-                }else{
-                    this.butacas[i][x] = new Butaca(0);
+        this.butacas = new Butaca[5][5][filas][butacas];
+        for(int z=0;z<this.butacas.length;z++){
+            for(int y=0;y<this.butacas[z].length;y++) {
+                for (int i = 0; i < this.butacas[z][y].length; i++) {
+                    for (int x = 0; x < this.butacas[z][y][i].length; x++) {
+                        if (i == filaVip) {
+                            this.butacas[z][y][i][x] = new Butaca(1);
+                        } else if (i == 0 && (x == 0 || x == 1)) {
+                            this.butacas[z][y][i][x] = new Butaca(2);
+                        } else {
+                            this.butacas[z][y][i][x] = new Butaca(0);
+                        }
+                    }
                 }
             }
         }
@@ -28,13 +32,44 @@ public class Sala {
     //metodos
     public void SelSala(){
         Scanner teclado = new Scanner(System.in);
-        int opcion=0;
+        int dia=0, sesion=0, opcion=0;
         int[][] BUTACAS=null;
+        GregorianCalendar hoy = new GregorianCalendar();
 
-        imprimirSala();
+        System.out.println("\nDias disponibles:");
+        System.out.println("    1 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+1)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    2 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+2)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    3 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+3)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    4 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+4)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    5 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+5)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        do {
+            System.out.print("¿Que dia desea (1-5)?: ");
+            dia = teclado.nextInt();
+            if (dia < 1 || dia > 5) {
+                System.out.println("Porfavor introducta un numero entre 1 y 5");
+            }
+        } while (dia < 1 || dia > 5);
+        dia=dia-1;
+
+        System.out.println("\nSesiones disponibles:");
+        System.out.println("    1 --> 12:00");
+        System.out.println("    2 --> 14:00");
+        System.out.println("    3 --> 16:00");
+        System.out.println("    4 --> 18:00");
+        System.out.println("    5 --> 20:00");
+        do {
+            System.out.print("¿Que sesion desea (1-5)?: ");
+            sesion = teclado.nextInt();
+            if (sesion < 1 || sesion > 5) {
+                System.out.println("Porfavor introducta un numero entre 1 y 5");
+            }
+        } while (sesion < 1 || sesion > 5);
+        sesion=sesion-1;
+
+        imprimirSala(dia,sesion);
         System.out.println("\nOpciones:");
-        System.out.println("    1 --> Ver otra sala");
-        System.out.println("    2 --> Selecionar butacas");
+        System.out.println("    1 --> Selecionar butacas");
+        System.out.println("    2 --> Ver otra sala");
         do {
             System.out.print("¿Que desea hacer (1-2)?: ");
             opcion = teclado.nextInt();
@@ -45,9 +80,6 @@ public class Sala {
         System.out.println();
         switch (opcion) {
             case 1:
-
-                break;
-            case 2:
                 System.out.println("Opciones:");
                 System.out.println("    1 --> Aleatorias");
                 System.out.println("    2 --> Selecionar solo fila");
@@ -62,18 +94,17 @@ public class Sala {
                 System.out.println();
                 switch (opcion) {
                     case 1:
-
                         do {
                             System.out.print("Cuantas butacas desea: ");
                             opcion = teclado.nextInt();
-                            if (opcion>getNumButacasLibre()) {
-                                System.out.println("Error: No quedan tantas butacas libres, solo quedan(0 si no quiere ninguna): " + getNumButacasLibre());
+                            if (opcion>getNumButacasLibre(dia,sesion)) {
+                                System.out.println("Error: No quedan tantas butacas libres, solo quedan(0 si no quiere ninguna): " + getNumButacasLibre(dia,sesion));
                             }
-                        } while (opcion>getNumButacasLibre());
+                        } while (opcion>getNumButacasLibre(dia,sesion));
                         limpiar();
-                        BUTACAS = setButacasAleatorios(opcion);
+                        BUTACAS = setButacasAleatorios(dia,sesion,opcion);
                         for(int i=0;i<BUTACAS.length;i++){
-                            ticket(sala,BUTACAS[i][0]+1,BUTACAS[i][1]+1,getPelicula(),"22:00", "09/03/2019", getTipoButaca(BUTACAS[i][0],BUTACAS[i][1]),getNumVentaButaca(BUTACAS[i][0],BUTACAS[i][1]),getFechaVenta(BUTACAS[i][0],BUTACAS[i][1]));
+                            ticket(sala,BUTACAS[i][0]+1,BUTACAS[i][1]+1,getPelicula(),"22:00", "09/03/2019", getTipoButaca(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]),getNumVentaButaca(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]),getFechaVenta(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]));
                             System.out.println();
                         }
                         System.out.println("Pulse cualquier telca para continuar");
@@ -81,35 +112,45 @@ public class Sala {
                         teclado.nextLine();
                         break;
                     case 2:
-
+                        do {
+                            System.out.print("Que fila desea(1-"+butacas[dia][sesion].length+"): ");
+                            opcion = teclado.nextInt();
+                            if (opcion<1||opcion>butacas.length) {
+                                System.out.println("Error: esa fila no existe, porfavor introducta un numero entre 1 y "+butacas[dia][sesion].length);
+                            }
+                        } while (opcion<1||opcion>butacas[dia][sesion].length);
                         break;
                     case 3:
 
                         break;
                 }
                 break;
+            case 2:
+
+                break;
         }
     }
     
-    public void imprimirSala(){
+    public void imprimirSala(int dia, int sesion){
+
         System.out.println("\nLa sala " + sala + " con la pelicula: " + pelicula);
         System.out.print("    ");
-        for(int i=0;i<butacas[1].length;i++){
+        for(int i=0;i<butacas[dia][sesion][1].length;i++){
             System.out.print((i+1) + "  ");
         }
         System.out.println();
-        for(int i=0;i<butacas.length;i++){
+        for(int i=0;i<butacas[dia][sesion].length;i++){
             if(i<=8){
                 System.out.print("f0"+(i+1));
             }else{
                 System.out.print("f"+(i+1));
             }
             System.out.print(" ");
-            for(int x=0;x<butacas[i].length;x++){
-                if(butacas[i][x].getEstado()==false){
-                        if(butacas[i][x].getTipo()==0) {
+            for(int x=0;x<butacas[dia][sesion][i].length;x++){
+                if(butacas[dia][sesion][i][x].getEstado()==false){
+                        if(butacas[dia][sesion][i][x].getTipo()==0) {
                             System.out.print("0  ");
-                        }else if(butacas[i][x].getTipo()==1) {
+                        }else if(butacas[dia][sesion][i][x].getTipo()==1) {
                             System.out.print("V  ");
                         }else{
                             System.out.print("M  ");
@@ -135,29 +176,29 @@ public class Sala {
         return pelicula;
     }
 
-    public String getTipoButaca(int fila, int butaca){
-        if(butacas[fila][butaca].getTipo()==0){
+    public String getTipoButaca(int dia, int sesion, int fila, int butaca){
+        if(butacas[dia][sesion][fila][butaca].getTipo()==0){
             return "NORMAL";
-        }else if(butacas[fila][butaca].getTipo()==1){
+        }else if(butacas[dia][sesion][fila][butaca].getTipo()==1){
             return "VIP";
         }else{
             return "MINUSV";
         }
     }
 
-    public int getNumVentaButaca(int fila, int butaca){
-        return butacas[fila][butaca].getNumVenta();
+    public int getNumVentaButaca(int dia, int sesion, int fila, int butaca){
+        return butacas[dia][sesion][fila][butaca].getNumVenta();
     }
 
-    public GregorianCalendar getFechaVenta(int fila, int butaca){
-        return butacas[fila][butaca].getFechaVenta();
+    public GregorianCalendar getFechaVenta(int dia, int sesion, int fila, int butaca){
+        return butacas[dia][sesion][fila][butaca].getFechaVenta();
     }
 
-    public int getNumButacasLibre(){
+    public int getNumButacasLibre(int dia, int sesion){
         int libres=0;
-        for(int i=0;i<butacas.length;i++){
-            for(int x=0;x<butacas[i].length;x++){
-                if(butacas[i][x].getEstado()==false){
+        for(int i=0;i<butacas[dia][sesion].length;i++){
+            for(int x=0;x<butacas[dia][sesion][i].length;x++){
+                if(butacas[dia][sesion][i][x].getEstado()==false){
                     libres++;
                 }
             }
@@ -165,19 +206,19 @@ public class Sala {
         return libres;
     }
 
-    public int[][] setButacasAleatorios(int numButacas) {
+    public int[][] setButacasAleatorios(int dia, int sesion, int numButacas) {
         int BUTACAS[][] = new int[numButacas][2];
         int numAltFila =0, numAltButaca=0;
 
         for(int i=0;i<numButacas;i++){
             for(int a=0;a<1;){
-                numAltFila = (int) (Math.random() * butacas.length);
-                numAltButaca = (int) (Math.random() * butacas[numAltFila].length);
-                if(butacas[numAltFila][numAltButaca].getEstado()==false){
+                numAltFila = (int) (Math.random() * butacas[dia][sesion].length);
+                numAltButaca = (int) (Math.random() * butacas[dia][sesion][numAltFila].length);
+                if(butacas[dia][sesion][numAltFila][numAltButaca].getEstado()==false){
                     a=2;
                 }
             }
-            butacas[numAltFila][numAltButaca].setComprado();
+            butacas[dia][sesion][numAltFila][numAltButaca].setComprado();
             BUTACAS[i][0] = numAltFila;
             BUTACAS[i][1] = numAltButaca;
         }
