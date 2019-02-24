@@ -10,7 +10,17 @@ public class Main {
         Sala sala1 = new Sala(1, "Fast and Furius", 10, 10, 5);
         Sala sala2 = new Sala(2, "Star Wars", 5, 5, 3);
         Sala sala3 = new Sala(3, "Los Increibles", 7, 5, 3);
-        
+
+        String text = "--------------------------------------------------------------" +
+                    "\n|                         Bienvenido                          |" +
+                    "\n|                             al                              |" +
+                    "\n|                  tpv de Ocine rio Shoping                   |" +
+                    "\n---------------------------------------------------------------";
+        for(int i=0;i<text.length();i++){
+            System.out.print(text.charAt(i));
+            pausa(20);
+        }
+        limpiar();
 
         for(;pSalas<1;) {
             limpiar();
@@ -40,6 +50,51 @@ public class Main {
                     sala3.SelSala();
                     break;
             }
+        }
+    }
+
+    public static String encriptar(String text){
+        char[] cod = new char[text.length()];
+        for(int i=0;i<text.length();i++){
+            cod[i]=text.charAt(i);
+        }
+
+        for(int i=0;i<cod.length;i++){
+            int a = cod[i];
+            a=a+5;
+            cod[i]=(char) a;
+        }
+        String encipt ="";
+        for(int i=0;i<cod.length;i++){
+            encipt=encipt+cod[i];
+        }
+        return encipt;
+    }
+
+    public static String desencriptar(String text){
+        char[] cod = new char[text.length()];
+        for(int i=0;i<text.length();i++){
+            cod[i]=text.charAt(i);
+        }
+
+        for(int i=0;i<cod.length;i++){
+            int a = cod[i];
+            a=a-5;
+            cod[i]=(char) a;
+        }
+        String encipt ="";
+        for(int i=0;i<cod.length;i++){
+            encipt=encipt+cod[i];
+        }
+        return encipt;
+    }
+
+    public static void pausa(int mill){
+        try {
+            Thread.sleep(mill);
+        } catch(InterruptedException ex){
+
+            System.exit(0);
         }
     }
 
