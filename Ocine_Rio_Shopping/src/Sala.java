@@ -32,8 +32,9 @@ public class Sala {
     //metodos
     public void SelSala(){
         Scanner teclado = new Scanner(System.in);
-        int dia=0, sesion=0, opcion=0;
+        int dia=0, sesion=0, fila=0, butaca=0, opcion=0;
         int[][] BUTACAS=null;
+        int[] BUTACA=null;
         GregorianCalendar hoy = new GregorianCalendar();
 
         System.out.println("\nDias disponibles:");
@@ -107,21 +108,87 @@ public class Sala {
                             ticket(sala,BUTACAS[i][0]+1,BUTACAS[i][1]+1,getPelicula(),"22:00", "09/03/2019", getTipoButaca(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]),getNumVentaButaca(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]),getFechaVenta(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]));
                             System.out.println();
                         }
-                        System.out.println("Pulse cualquier telca para continuar");
+                        System.out.println("Puse enter para continuar");
                         teclado.nextLine();
                         teclado.nextLine();
                         break;
                     case 2:
                         do {
-                            System.out.print("Que fila desea(1-"+butacas[dia][sesion].length+"): ");
-                            opcion = teclado.nextInt();
-                            if (opcion<1||opcion>butacas.length) {
-                                System.out.println("Error: esa fila no existe, porfavor introducta un numero entre 1 y "+butacas[dia][sesion].length);
+                            do {
+                                System.out.print("Que fila desea(1-"+butacas[dia][sesion].length+"): ");
+                                fila = teclado.nextInt();
+                                if (fila<1||fila>butacas.length) {
+                                    System.out.println("Error: esa fila no existe, porfavor introducta un numero entre 1 y "+butacas[dia][sesion].length);
+                                }
+                            } while (fila<1||fila>butacas[dia][sesion].length);
+                            System.out.println("La fila " + fila + ", dispone de " + getNumButacasLibresFila(dia,sesion,fila));
+                            System.out.print("¿Cuntas entradas desea(0 para cambiar de fila)?: ");
+                            butaca = teclado.nextInt();
+                            if (butaca<0||butaca>getNumButacasLibresFila(dia,sesion,fila)) {
+                                System.out.println("Error: porfavor introduzca un numero entre 0 y " + getNumButacasLibresFila(dia,sesion,fila));
                             }
-                        } while (opcion<1||opcion>butacas[dia][sesion].length);
+                            if(butaca==0){
+                                fila=0;
+                            }
+                        }while (butaca<1||butaca>getNumButacasLibresFila(dia,sesion,fila));
+                        limpiar();
+                        BUTACA = setButacasFila(dia,sesion,fila,butaca);
+                        for(int i=0;i<BUTACA.length;i++){
+                            ticket(sala,fila,BUTACA[i]+1,getPelicula(),"22:00", "09/03/2019", getTipoButaca(dia,sesion,fila,BUTACA[i]),getNumVentaButaca(dia,sesion,fila,BUTACA[i]),getFechaVenta(dia,sesion,fila,BUTACA[i]));
+                            System.out.println();
+                        }
+                        System.out.println("Puse enter para continuar");
+                        teclado.nextLine();
+                        teclado.nextLine();
                         break;
                     case 3:
 
+                        do {
+                            System.out.print("Cuantas butacas desea: ");
+                            opcion = teclado.nextInt();
+                            if (opcion>getNumButacasLibre(dia,sesion)) {
+                                System.out.println("Error: No quedan tantas butacas libres, solo quedan(0 si no quiere ninguna): " + getNumButacasLibre(dia,sesion));
+                            }
+                        } while (opcion>getNumButacasLibre(dia,sesion));
+                        BUTACAS = new int[opcion][2];
+                        int conttick=0;
+                        do {
+                            do {
+                                limpiar();
+                                imprimirSala(dia,sesion);
+                                System.out.print("Que fila desea(1-"+butacas[dia][sesion].length+"): ");
+                                fila = teclado.nextInt();
+                                if (fila<1||fila>butacas.length) {
+                                    System.out.println("Error: esa fila no existe, porfavor introducta un numero entre 1 y "+butacas[dia][sesion].length);
+                                }
+                            } while (fila<1||fila>butacas[dia][sesion].length);
+                            if(getNumButacasLibresFila(dia,sesion,fila)!=0) {
+                                System.out.print("¿Que butaca desea (0 para cambiar de fila)?: ");
+                                butaca = teclado.nextInt();
+                                fila--;
+                                butaca--;
+                                if (butacas[dia][sesion][fila][butaca].getEstado()==false){
+                                    butacas[dia][sesion][fila][butaca].setComprado();
+                                    BUTACAS[conttick][0] = fila;
+                                    BUTACAS[conttick][1] = butaca;
+                                    conttick++;
+                                }else{
+                                    System.out.println("Esa butaca esta ocupada.");
+                                    System.out.println("Puse enter para continuar");
+                                    teclado.nextLine();
+                                    teclado.nextLine();
+                                }
+                            }else{
+                                System.out.println("La fila " + fila + ", no dispone de butacas");
+                            }
+                        }while (conttick<opcion);
+                        for(int i=0;i<BUTACAS.length;i++){
+                            ticket(sala,BUTACAS[i][0]+1,BUTACAS[i][1]+1,getPelicula(),"22:00", "09/03/2019", getTipoButaca(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]),getNumVentaButaca(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]),getFechaVenta(dia,sesion,BUTACAS[i][0],BUTACAS[i][1]));
+                            System.out.println();
+                        }
+                        System.out.println("Puse enter para continuar");
+                        teclado.nextLine();
+                        teclado.nextLine();
                         break;
                 }
                 break;
@@ -194,6 +261,16 @@ public class Sala {
         return butacas[dia][sesion][fila][butaca].getFechaVenta();
     }
 
+    public int getNumButacasLibresFila(int dia, int sesion, int fila){
+        int libres=0;
+        for(int i=0;i<butacas[dia][sesion][fila].length;i++){
+            if(butacas[dia][sesion][fila][i].getEstado()==false){
+                libres++;
+            }
+        }
+        return libres;
+    }
+
     public int getNumButacasLibre(int dia, int sesion){
         int libres=0;
         for(int i=0;i<butacas[dia][sesion].length;i++){
@@ -223,6 +300,24 @@ public class Sala {
             BUTACAS[i][1] = numAltButaca;
         }
 
+        return BUTACAS;
+    }
+
+    public int[] setButacasFila(int dia, int sesion, int fila, int numButacas){
+        int BUTACAS[] = new int[numButacas];
+        int butacasCom=0;
+
+        for(int i=0;i<butacas[dia][sesion][fila].length;i++){
+            if(butacasCom<numButacas) {
+                if (butacas[dia][sesion][fila][i].getEstado() == false) {
+                    butacas[dia][sesion][fila][i].setComprado();
+                    BUTACAS[butacasCom] = i;
+                    butacasCom++;
+                }
+            }else{
+                return BUTACAS;
+            }
+        }
         return BUTACAS;
     }
 
