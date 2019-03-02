@@ -20,6 +20,12 @@ public class Butaca {
         return estado;
     }
 
+    public void setCancelarcompra(){
+        estado = false;
+        this.numVenta=0;
+        this.FechaVenta=null;
+    }
+
     public void setComprado() {
         GregorianCalendar ahora = new GregorianCalendar();
         estado = true;

@@ -30,7 +30,7 @@ public class Sala {
     }
 
     //metodos
-    public void SelSala(){
+    public void empleado(){
         Scanner teclado = new Scanner(System.in);
         int dia=0, sesion=0, fila=0, butaca=0, opcion=0;
         int[][] BUTACAS=null;
@@ -193,6 +193,125 @@ public class Sala {
                 }
                 break;
             case 2:
+
+                break;
+        }
+    }
+
+    public void Admin(){
+        Scanner teclado = new Scanner(System.in);
+        int dia=0, sesion=0, fila=0, butaca=0, opcion=0;
+        int[][] BUTACAS=null;
+        int[] BUTACA=null;
+        GregorianCalendar hoy = new GregorianCalendar();
+
+        System.out.println("\nDias disponibles:");
+        System.out.println("    1 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+1)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    2 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+2)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    3 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+3)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    4 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+4)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        System.out.println("    5 --> "+ (hoy.get(hoy.DAY_OF_MONTH)+5)+"/"+(hoy.get(hoy.MONTH)+1)+"/"+hoy.get(hoy.YEAR));
+        do {
+            System.out.print("¿Que dia desea (1-5)?: ");
+            dia = teclado.nextInt();
+            if (dia < 1 || dia > 5) {
+                System.out.println("Porfavor introducta un numero entre 1 y 5");
+            }
+        } while (dia < 1 || dia > 5);
+        dia=dia-1;
+
+        System.out.println("\nSesiones disponibles:");
+        System.out.println("    1 --> 12:00");
+        System.out.println("    2 --> 14:00");
+        System.out.println("    3 --> 16:00");
+        System.out.println("    4 --> 18:00");
+        System.out.println("    5 --> 20:00");
+        do {
+            System.out.print("¿Que sesion desea (1-5)?: ");
+            sesion = teclado.nextInt();
+            if (sesion < 1 || sesion > 5) {
+                System.out.println("Porfavor introducta un numero entre 1 y 5");
+            }
+        } while (sesion < 1 || sesion > 5);
+        sesion=sesion-1;
+
+        imprimirSala(dia,sesion);
+        System.out.println("\nOpciones:");
+        System.out.println("    1 --> Cancelar compra ticket");
+        System.out.println("    2 --> Cancelar toda la sesion");
+        System.out.println("    3 --> Salir");
+        do {
+            System.out.print("¿Que desea hacer (1-3)?: ");
+            opcion = teclado.nextInt();
+            if (opcion < 1 || opcion > 3) {
+                System.out.println("Porfavor introducta un numero entre 1 y 3");
+            }
+        } while (opcion < 1 || opcion > 3);
+        System.out.println();
+        switch (opcion) {
+            case 1:
+                if(getNumButacasLibre(dia,sesion)!=(butacas[dia][sesion].length*butacas[dia][sesion][0].length)){
+                    imprimirSala(dia, sesion);
+                    System.out.println("Que butaca desea cancelar");
+                    do {
+                        System.out.print("Introduzca la fila: ");
+                        fila = teclado.nextInt();
+                        if (fila<1||fila>butacas[dia][sesion].length) {
+                            System.out.println("Error: Esta fila no exite, porfavor introduzca un numero del 1 al " + butacas[dia][sesion].length);
+                        }
+                    } while (fila<1||fila>butacas[dia][sesion].length);
+                    fila--;
+                    do{
+                        System.out.print("Introduzca la butaca: ");
+                        butaca = teclado.nextInt();
+                        if (butaca<1||butaca>butacas[dia][sesion][fila].length) {
+                            System.out.println("Error: Esta butaca no exite, porfavor introduzca un numero del 1 al " + butacas[dia][sesion][fila].length);
+                        }else if(butacas[dia][sesion][fila][(butaca-1)].getEstado()==false){
+                            System.out.println("Esta butaca esta vacia");
+                        }
+                    } while ((butaca<1||butaca>butacas[dia][sesion][fila].length)||butacas[dia][sesion][fila][(butaca-1)].getEstado()==false);
+                    butaca--;
+                    butacas[dia][sesion][fila][butaca].setCancelarcompra();
+                    System.out.println("La butaca " + (butaca+1) + ", de la fila " + (fila+1) + ", a sido cancelada.");
+                    System.out.println("Puse enter para continuar");
+                    teclado.nextLine();
+                    teclado.nextLine();
+                }else{
+                    System.out.println("Esta sesión, esta vacia.");
+                    System.out.println("Puse enter para continuar");
+                    teclado.nextLine();
+                    teclado.nextLine();
+                }
+                break;
+            case 2:
+                do {
+                    System.out.print("¿Esta seguro de cancelar toda una sesion?(1-Si 2-No): ");
+                    opcion = teclado.nextInt();
+                    if (opcion < 1 || opcion > 2) {
+                        System.out.println("Error: Introduzca 1 si es si o 2 si es no");
+                    }
+                } while (opcion < 1 || opcion > 2);
+                switch (opcion){
+                    case 1:
+                        for (int i = 0; i < this.butacas[dia][sesion].length; i++) {
+                            for (int x = 0; x < this.butacas[dia][sesion][i].length; x++) {
+                                butacas[dia][sesion][i][x].setCancelarcompra();
+                            }
+                        }
+                        System.out.println("Todas las butacas han sido canceladas.");
+                        System.out.println("Puse enter para continuar");
+                        teclado.nextLine();
+                        teclado.nextLine();
+                        break;
+                    case 2:
+                        System.out.println("Operación cancelada");
+                        System.out.println("Puse enter para continuar");
+                        teclado.nextLine();
+                        teclado.nextLine();
+                        break;
+                }
+                break;
+            case 3:
 
                 break;
         }
