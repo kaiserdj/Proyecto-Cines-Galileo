@@ -7,4 +7,5 @@ Hay dos proyectos java:
 	 - Este es una alternativa con varias mejoras y modificaciones del proyecto inicial (Hecho desde 0)
 
 Todo a sido desarrollado mediante el programa ***IntelliJ IDEA Ultimate***
+
 ![IntelliJ IDEA Ultimate](http://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png)
