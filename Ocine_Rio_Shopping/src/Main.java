@@ -5,9 +5,9 @@ public class Main {
     public static int ventas=0;
 
     public static void main(String[] args) {
-        String empleado = "lfqnqjt"; //galileo
-        String admin = "firnsnxywfitw"; //administrador
-        String estadistica = "xyfyx"; //stats
+        String empleado = "lfqnqjt"; //usuario: empleado contraseña: galileo
+        String admin = "firnsnxywfitw"; //usuario: admin contraseña: administrador
+        String estadistica = "xyfyx"; //usuario: estadistica contraseña: stats
         String usuario = "", contraseña = "#", contraseña2 = "##";
         Scanner teclado = new Scanner(System.in);
         int opcion=0, user=0, SelSala=0;
@@ -259,6 +259,11 @@ public class Main {
                     }
                     break;
                 case 3:
+                    limpiar();
+                    System.out.println("Numero de ventas realizadas: " + ventas);
+                    System.out.println("Pulse enter para salir");
+                    teclado.nextLine();
+                    teclado.nextLine();
 
                     break;
             }
